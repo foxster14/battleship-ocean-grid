@@ -139,7 +139,13 @@ void getCoordinates(Coordinates* coordinates, int height)
 void shipSelection()
 {
     printf("You have five ships.\n\n");
-    printf("You have five ships.\n\n");
+    printf("You have five ships.\n"
+    "1.\n"
+    "2.\n"
+    "3.\n"
+    "4.\n"
+    "5.\n"
+    );
 }
 
 void main()
