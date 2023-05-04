@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <ctype.h>
+#include "~/submission/group3/Sarah/ocean-grid.h"
 
 typedef struct {
     int height;
@@ -24,9 +26,9 @@ void gridSelection(Grid* grid)
     "2. 12 x 12\n"
     "3. 24 x 24\n");
 
-    int userInput;
-    scanf("%d", &userInput); 
-    if (userInput == 1)
+    int input_x;
+    scanf("%d", &input_x); 
+    if (input_x == 1)
     {
         grid->height = 8;
         grid->width = 8;
@@ -34,7 +36,7 @@ void gridSelection(Grid* grid)
         "The height and width have been updated.\n");
         printf("Height: %d\nWidth: %d\n\n", grid->height, grid->width);
     }
-    else if (userInput == 2)
+    else if (input_x == 2)
     {
         grid->height = 12;
         grid->width = 12;
@@ -42,7 +44,7 @@ void gridSelection(Grid* grid)
         "The height and width have been updated.\n");
         printf("Height: %d\nWidth: %d\n\n", grid->height, grid->width);
     }
-    else if (userInput == 3)
+    else if (input_x == 3)
     {
         grid->height = 24;
         grid->width = 24;
@@ -76,36 +78,68 @@ void howToPlay()
 
 void getCoordinates(Coordinates* coordinates, int height)
 {
+    char endChar;
+
     if (height == 8)
     {
-        printf("Enter in a letter between A-H.\n");
-        char userInput;
-        scanf("%s", &userInput);
-        if((userInput >= 'a' && userInput <= 'h') || (userInput >= 'A' && userInput <= 'H'))
-        {
-            printf("You entered %c\n", userInput);
-        }
-        else
-        {
-            printf("Invalid user input.\n");
-        }
+        endChar = 'h';
     }
     else if (height == 12)
     {
-        printf("Enter in a letter between A-L.\n");
-        char userInput;
-        scanf("%s", &userInput); 
-    }
-    else if (height == 24)
+        endChar = 'l';
+    } else if (height == 24)
     {
-        printf("Enter in a letter between A-X.\n");
-        char userInput;
-        scanf("%s", &userInput); 
+        endChar = 'x';
     }
     else
     {
         printf("Invalid grid size.\n");
     }
+    
+    char input_x;
+
+    // consume all characters in the input buffer until the \n
+    while ((input_x = getchar()) != '\n' && input_x != EOF) {}
+
+    printf("Enter in a letter between A-%c.\n", toupper(endChar));
+    scanf("%c", &input_x);
+
+    if((input_x >= 'a' && input_x <= endChar) ||
+    (input_x >= 'A' && input_x <= toupper(endChar)))
+    {
+        printf("You entered %c\n", input_x);
+        coordinates->x_cord = input_x;
+        printf("X Coordinate: %c\n\n", coordinates->x_cord);
+    }
+    else
+    {
+        printf("Invalid user input.\n");
+    }
+
+    int input_y;
+
+    // consume all characters in the input buffer until the \n
+    while ((input_y = getchar()) != '\n' && input_y != EOF) {}
+
+    printf("Enter in a letter between 1-%d.\n", height);
+    scanf("%d", &input_y);
+
+    if((input_y >= 1 && input_y <= height))
+    {
+        printf("You entered %d\n", input_y);
+        coordinates->y_cord = input_y;
+        printf("Y Coordinate: %d\n\n", coordinates->y_cord);
+    }
+    else
+    {
+        printf("Invalid user input.\n");
+    }
+}
+
+void shipSelection()
+{
+    printf("You have five ships.\n\n");
+    printf("You have five ships.\n\n");
 }
 
 void main()
