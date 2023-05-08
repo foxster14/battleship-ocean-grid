@@ -46,7 +46,7 @@ int GenerateRandomNumber()
     }
 } */
 
-/* void PlayGame()
+void PlayGame()
 {
     //temp variables and values for players health
     int player1HP = 2, player2HP = 2;
@@ -55,30 +55,28 @@ int GenerateRandomNumber()
     srand(time(NULL));
 
     //Initial turn order, will need to change based on how we setup plyer. Bool is temp
-    bool player = DetermineTurnOrder();
+    int player = InitialTurnOrder();
 
-    printf("%d", player);
     do 
     {
         switch(player)
         {
-        //Player 2
-        case(0):
-            printf("------------------PLAYER 1's OCEAN GRID------------------\n");
-            //METHOD FOR PRINTING BOARD HERE
-            printf("Player 2's turn\n");
-            //METHOD FOR PICKING HIT LOCATION
-            player1HP--; //Method will be here to determine if hit damages player
-            player = 0;
-        break;
-
-        //Player 1
+        //Player 
         case(1):
             printf("------------------PLAYER 2's OCEAN GRID------------------\n");
             //METHOD FOR PRINTING BOARD HERE
             printf("Player 1's turn\n");
             //METHOD FOR PICKING HIT LOCATION
             player2HP--; //Method will be here to determine if hit damages player
+            player = 0;
+        break;
+
+        //Computer
+        case(2):
+            //METHOD FOR PRINTING BOARD HERE
+            printf("Wait for other player.\n");
+            //METHOD FOR PICKING HIT LOCATION
+            player1HP--; //Method will be here to determine if hit damages player
             player = 1;
         break;
         }
@@ -92,7 +90,7 @@ int GenerateRandomNumber()
     {
         printf("Player 2 wins\n");
     }
- } */
+ }
 
 int InitialTurnOrder()
 {
@@ -109,7 +107,7 @@ int InitialTurnOrder()
     }
 }
 
-void HandleTurns(struct TempPlayer currentPlayer)
+/* void HandleTurns(struct TempPlayer currentPlayer)
 {
     currentPlayer.playerID = InitialTurnOrder();
     printf("Player %d's turn.\n", currentPlayer.playerID);
@@ -119,7 +117,7 @@ void HandleTurns(struct TempPlayer currentPlayer)
         
     } while (currentPlayer.playerHP > 0);
     
-}
+} */
 
 int main(void)
 {
@@ -132,5 +130,6 @@ int main(void)
     //printf("Player HP: %d\n", p2.playerHP);
 
     //InitialTurnOrder();
-    HandleTurns(p1);
+    //HandleTurns(p1);
+    PlayGame();
 }

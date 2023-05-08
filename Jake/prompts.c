@@ -1,11 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
-#include "~/submission/group3/Sarah/ocean-grid.h"
-
-typedef struct {
-    int height;
-    int width;
-} Grid;
+#include "/submission/group3/Sarah/ocean-grid.h"
 
 typedef struct {
     char x_cord;
@@ -87,7 +82,8 @@ void getCoordinates(Coordinates* coordinates, int height)
     else if (height == 12)
     {
         endChar = 'l';
-    } else if (height == 24)
+    } 
+    else if (height == 24)
     {
         endChar = 'x';
     }
@@ -138,23 +134,43 @@ void getCoordinates(Coordinates* coordinates, int height)
 
 void shipSelection()
 {
-    printf("You have five ships.\n\n");
-    printf("You have five ships.\n"
-    "1.\n"
-    "2.\n"
-    "3.\n"
-    "4.\n"
-    "5.\n"
+    printf("You have five ships.\n");
+    printf(
+    "1. Carrier [5]\n"
+    "2. Battleship [4]\n"
+    "3. Submarine [3]\n"
+    "4. Cruiser [3]\n"
+    "5. Destroyer [2]\n\n"
     );
+
+    char ships[5][11] = {"Carrier", "Battleship", "Submarine", "Cruiser", "Destroyer"};
+    char coordinate_input;
+    char direction_input;
+
+    for (int i = 0; i < 5; i++)
+    {
+        printf("Enter first coordinate (e.g. A1) for %s.\n", ships[i]);
+        scanf("%c", &coordinate_input);
+        printf("User entered: %c.\n", coordinate_input);
+        // consume all characters in the input buffer until the \n
+        while ((coordinate_input = getchar()) != '\n' && coordinate_input != EOF) {}
+
+        printf("Enter V to place the %s vertically or H to place the %s horizontally.\n", ships[i], ships[i]);
+        scanf("%c", &direction_input);
+        printf("User entered: %c.\n", direction_input);
+        // consume all characters in the input buffer until the \n
+        while ((direction_input = getchar()) != '\n' && direction_input != EOF) {}
+    }
 }
 
-void main()
+int main(void)
 {
-    Grid grid = {0};
+    //Grid grid = {0};
     Coordinates coordinates = {0};
 
     //welcomeMessage();
-    gridSelection(&grid);
+    //gridSelection(&grid);
     //howToPlay();
-    getCoordinates(&coordinates, grid.height);
+    //getCoordinates(&coordinates, grid.height);
+    shipSelection();
 }
