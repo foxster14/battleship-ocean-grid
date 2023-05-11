@@ -94,7 +94,7 @@ void updateOceanGrid(Grid *grid, Coordinate target ){
 }
 
 
-int main(){
+/* int main(){
 
     // unsigned table10[10][10];
     // fillTimesTable(10, table10);
@@ -115,4 +115,4 @@ int main(){
     displayOceanGrid(&grid1, 12);
     //printf("%d", grid1.cells[0][1]);
 
-}
+} */

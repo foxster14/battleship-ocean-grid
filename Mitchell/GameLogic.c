@@ -119,7 +119,7 @@ int InitialTurnOrder()
     
 } */
 
-int main(void)
+/* int main(void)
 {
     srand(time(NULL));
     player p1 = {1, 17};
@@ -132,4 +132,4 @@ int main(void)
     //InitialTurnOrder();
     //HandleTurns(p1);
     PlayGame();
-}
+} */

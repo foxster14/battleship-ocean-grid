@@ -1,15 +1,14 @@
 #include <stdio.h>
-#include <ctype.h>
+#include "header.h"
 
-typedef struct {
-	int row;
-	int column;
-} Coordinate;
+#define WATER       '~'
+#define HIT         '✕' 
+#define SHIP        "■"
 
-/* typedef struct {
-    char row;
-    int column;
-} Coordinates; */
+#define ROW         12
+#define COLUMN      12
+
+
 
 void welcomeMessage()
 {
@@ -17,7 +16,7 @@ void welcomeMessage()
     "This is a CLI version of Battleship made by Sarah Fox, Jake Cermak, Mitchell Humphries, and Christopher Ferrie\n");
 }
 
-/*void gridSelection(Grid* grid)
+void gridSelection(Grid* grid)
 {
     printf("Select grid size.\n"
     "Enter a number between 1-3:\n"
@@ -55,7 +54,7 @@ void welcomeMessage()
     {
         printf("Invalid entry.\n");
     }
-}*/
+}
 
 void howToPlay()
 {
@@ -108,7 +107,7 @@ void getCoordinates(Coordinate* coordinates, int height)
     (input_x >= 'A' && input_x <= toupper(endChar)))
     {
         printf("You entered %c\n", input_x);
-        coordinates->row = input_x - 'A' + 1;
+        coordinates->row = input_x;
         printf("X Coordinate: %c\n\n", coordinates->row);
     }
     else
@@ -136,7 +135,7 @@ void getCoordinates(Coordinate* coordinates, int height)
     }
 }
 
-void shipSelection(Coordinate* coordinates, int height)
+void shipSelection()
 {
     printf("You have five ships.\n");
     printf(
@@ -148,12 +147,16 @@ void shipSelection(Coordinate* coordinates, int height)
     );
 
     char ships[5][11] = {"Carrier", "Battleship", "Submarine", "Cruiser", "Destroyer"};
+    char coordinate_input;
     char direction_input;
 
     for (int i = 0; i < 5; i++)
     {
-        getCoordinates(coordinates, height);
-        printf("User entered: %d%d.\n", coordinates->row, coordinates->column);
+        printf("Enter first coordinate (e.g. A1) for %s.\n", ships[i]);
+        scanf("%c", &coordinate_input);
+        printf("User entered: %c.\n", coordinate_input);
+        // consume all characters in the input buffer until the \n
+        while ((coordinate_input = getchar()) != '\n' && coordinate_input != EOF) {}
 
         printf("Enter V to place the %s vertically or H to place the %s horizontally.\n", ships[i], ships[i]);
         scanf("%c", &direction_input);
@@ -163,15 +166,53 @@ void shipSelection(Coordinate* coordinates, int height)
     }
 }
 
+// creats an empty ocean grid
+void initializeOceanGrid(Grid* grid){
+    //grid->cells = malloc(sizeof(Cell) * (12*12));
+    // grid->cells = malloc(sizeof(Cell) * (n));
+
+    for(int i = 0; i < 12; i++){
+        for(int j = 0; j < 12; j++){
+            changeCell(grid,i,j,WATER);
+        }
+        //grid->cells[i] = malloc((sizeof(Cell) * (n*n)));
+    }
+    //grid->cells = oceanGridArray; // doesn't work
+
+    //grid->cells = tempCellArray[grid->height][grid->width];
+    //return *grid;
+}
+
+void displayOceanGrid(Grid *grid, int n, Cell oceanGridArray[n][n])
+{
+    // Print the Column headers
+    int numOfAlphabetChars = n + 65;
+    printf("%5c|", ' ');
+    for(int i = 65; i < numOfAlphabetChars; i++){
+        printf("%4c ", i);
+    }
+    
+    printf("\n");
+
+    for(int row = 0; row < n; row++){
+        printf("%5d|", row+1); // Print row headers
+        for(int column = 0; column < n; column++){
+            // Print each coordinate on ocean grid
+            printf("%4c|", grid->cells->symbol);
+            //printf("%5d", table[row][column]);
+        }
+        printf("\n");
+    }
+}
+
+
+
+void updateOceanGrid(Grid *grid, Coordinate target )
+{
+
+}
+
 int main(void)
 {
-    //Grid grid = {0};
-    Coordinate coordinates = {0};
-    int height = 12;
-
-    //welcomeMessage();
-    //gridSelection(&grid);
-    //howToPlay();
-    //getCoordinates(&coordinates, grid.height);
-    shipSelection(&coordinates, height);
+    printf("hello");
 }
