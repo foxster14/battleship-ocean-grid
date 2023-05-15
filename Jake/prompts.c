@@ -98,42 +98,38 @@ void getCoordinates(Coordinate* coordinates, int height)
     
     char input_x;
 
-    // consume all characters in the input buffer until the \n
-    while ((input_x = getchar()) != '\n' && input_x != EOF) {}
-
     printf("Enter in a letter between A-%c.\n", toupper(endChar));
     scanf("%c", &input_x);
+
 
     if((input_x >= 'a' && input_x <= endChar) ||
     (input_x >= 'A' && input_x <= toupper(endChar)))
     {
-        printf("You entered %c\n", input_x);
-        coordinates->row = input_x - 'A' + 1;
-        printf("X Coordinate: %c\n\n", coordinates->row);
+        coordinates->row = input_x - 'A';
     }
     else
     {
         printf("Invalid user input.\n");
     }
+    // consume all characters in the input buffer until the \n
+    while ((input_x = getchar()) != '\n' && input_x != EOF) {}
 
     int input_y;
-
-    // consume all characters in the input buffer until the \n
-    while ((input_y = getchar()) != '\n' && input_y != EOF) {}
 
     printf("Enter in a letter between 1-%d.\n", height);
     scanf("%d", &input_y);
 
+
     if((input_y >= 1 && input_y <= height))
     {
-        printf("You entered %d\n", input_y);
-        coordinates->column = input_y;
-        printf("Y Coordinate: %d\n\n", coordinates->column);
+        coordinates->column = input_y - 1;
     }
     else
     {
         printf("Invalid user input.\n");
     }
+    // consume all characters in the input buffer until the \n
+    while ((input_y = getchar()) != '\n' && input_y != EOF) {}
 }
 
 void shipSelection(Coordinate* coordinates, int height)

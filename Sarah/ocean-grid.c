@@ -6,7 +6,7 @@
 
 #define WATER       '~'
 #define HIT         '✕' 
-#define SHIP        "■"
+#define SHIP        "\u25A0"
 
 typedef struct {
     char symbol;
