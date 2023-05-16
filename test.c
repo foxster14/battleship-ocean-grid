@@ -8,10 +8,10 @@ void getCoordinates(Coordinate* coordinates, int height)  //change to one input
         case 8:
             endChar = 'H';
             break;
-        case 8:
+        case 12:
             endChar = 'L';
             break;
-        case 8:
+        case 24:
             endChar = 'X';
             break;
         default:

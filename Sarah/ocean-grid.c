@@ -6,7 +6,11 @@
 
 #define WATER       '~'
 #define HIT         '✕' 
-#define SHIP        "\u25A0"
+#define SHIP        '\u25A0'
+
+#define RED         "\033[31m" //ANSI color 
+#define DEFAULT     "\033[0m" //ANSI color
+#define GREEN       "\033[32m" //ANSI color
 
 typedef struct {
     char symbol;
@@ -94,25 +98,26 @@ void updateOceanGrid(Grid *grid, Coordinate target ){
 }
 
 
-/* int main(){
+int main(){
 
     // unsigned table10[10][10];
     // fillTimesTable(10, table10);
     // printTimesTable(10, table10);
+    printf("%sThis will be red", RED);
     setlocale(LC_CTYPE, "");
     Grid grid1;
     grid1.height = 12;
     grid1.width = 12;
 
     Cell cell1;
-    grid1.cells = cell1[12][12];
+    //grid1.cells = cell1[12][12];
 
     //CreateGridArray();
     //int table1[12][12];
     //displayOceanGrid(12, table1);
 
-    initializeOceanGrid(&grid1, 12);
-    displayOceanGrid(&grid1, 12);
+    //initializeOceanGrid(&grid1, 12);
+    //displayOceanGrid(&grid1, 12);
     //printf("%d", grid1.cells[0][1]);
 
-} */
+}

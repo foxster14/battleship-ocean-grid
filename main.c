@@ -34,7 +34,7 @@ void initializeOceanGrid(Grid* grid){
 void displayOceanGrid(Grid *grid)
 {
     // Print the Column headers
-    int numOfAlphabetChars = ROW + 65;
+    //int numOfAlphabetChars = ROW + 65;
     printf("%5c|", ' ');
     for(int i = 0; i < ROW; i++){
         printf("%4d ", i+1);
@@ -56,7 +56,7 @@ void displayOceanGrid(Grid *grid)
 
 void displayEnemyGrid(Grid *grid){
 // Print the Column headers
-    int numOfAlphabetChars = ROW + 65;
+    //int numOfAlphabetChars = ROW + 65;
     printf("%5c|", ' ');
     for(int i = 0; i < ROW; i++){
         printf("%4d ", i+1);
@@ -82,6 +82,7 @@ void displayEnemyGrid(Grid *grid){
 
 bool updateOceanGrid(Grid *grid, Coordinate target )
 {
+    //printf("%d:%d\n",target.row,target.column);
     Cell* cell = getCell(grid,target.row,target.column);
     if(cell->symbol==SHIP)
     {
@@ -154,10 +155,14 @@ void gridSelection(Grid* grid)
     initializeOceanGrid(grid);
 }
 
+void welcomeHeader(char* c){
+    printf("\n=========================================== %s ===========================================\n\n", c);
+}
+
 void howToPlay()
 {
     clearScreen();
-    printf("\n=========================================== How To Play ===========================================\n\n");
+    welcomeHeader("How To Play");
     //printf("1. Select a grid size.\n\n");
     printf("1. Place your fleet of 5 ships.\n\n"
     "Each ship can be placed either horizontally or vertically.\n"
@@ -167,6 +172,7 @@ void howToPlay()
     pressEnterToContinue();
     clearScreen();
     //printf("3. Decide who goes first.\n\n");
+    welcomeHeader("How To Play");
     printf("\n2. Player will take turns guessing where the opponent's ships are\n"
     "Player chooses a coordinate on the ocean grid that hasn't been chosen yet as their attack on opponent's ships\n\n"
     "This target will be marked as either a hit or a miss on your view of the opponent's ocean grid\n"
@@ -175,18 +181,24 @@ void howToPlay()
 
     pressEnterToContinue();
     clearScreen();
+    welcomeHeader("How To Play");
     printf("\n3. The goal of the game is to successfully hit and sink all of the opponent's ships\n"
     "Once all coordinates of a single ship are hit, the ship will be marked as sunk ");
 
     pressEnterToContinue();
     clearScreen();
+    welcomeHeader("How To Play");
     printf("\n4. Continue targetting coordinates until the outcome of the game is decided");
     
     pressEnterToContinue();
     clearScreen();
+    welcomeHeader("How To Play");
     printf("\n5. Whoever sinks the opposing fleet of ships first wins the game ");
     pressEnterToContinue();
-    printf("\n=============================== Place Your Ships ===============================\n\n");
+    clearScreen();
+
+    welcomeHeader("Place Your Ships");
+    //printf("\n=============================== Place Your Ships ===============================\n\n");
     printf("You will now begin placing your ships\n");
     printf("You have five ships.\n");
     printf(
@@ -245,7 +257,7 @@ void shipSelection(Grid* playerGrid)
             Coordinate coordinates = {0};
             getCoordinates(&coordinates);
 
-            printf("\nUser entered:\nrow: %d column: %d\n", coordinates.row, coordinates.column);
+            //printf("\nUser entered:\nrow: %d column: %d\n", coordinates.row, coordinates.column);
 
             printf("Enter 'V' to place the ship vertically or 'H' to place the ship horizontally:\t");
             scanf("%c", &direction_input);
@@ -264,7 +276,7 @@ void shipSelection(Grid* playerGrid)
                 printf("Invalid orientation\n");
                 continue;
             }
-            if(coordinates.row+(sizes[i]*((orientation+1)%2)) >= playerGrid->width || coordinates.column+(sizes[i]*orientation) >= playerGrid->height )
+            if(coordinates.row+(sizes[i]*((orientation+1)%2)) > playerGrid->width || coordinates.column+(sizes[i]*orientation) > playerGrid->height )
             {
                 printf("Invalid Entry, ship out of bounds\n");
                 continue;
@@ -333,7 +345,7 @@ bool checkLocation(Grid* grid, int size, int orientation, int x, int y)
     return true;
 }
 
-void ai_placeships(Grid* grid)
+void randomlyPlaceShips(Grid* grid)
 {
     int shipSize;
     for(int i=0;i<5;i++)
@@ -386,76 +398,81 @@ bool checkViable(Cell* cell)
     return false;
 }
 
-int checkDirections(Grid* grid,Cell* cell)
+int checkDirections(Grid* grid,Cell cell)
 {
     int ret = 0;
+    int add;
     Cell* currentCell;
     for(int i=0;i<4;i++)
     {
         switch(i)
         {
             case 0:
-                if(cell->position.row-1<0){
+                if(cell.position.row-1<0){
                     continue;
                 }
-                //set currentCell to up
-                currentCell = getCell(grid,cell->position.row-1,cell->position.column);
+                //printf("set currentCell to up\n");
+                currentCell = getCell(grid,cell.position.row-1,cell.position.column);
+                add = 1;
                 break;
             case 1:
-                if(cell->position.row+1<grid->height){
+                if(cell.position.row+1>=grid->height){
                     continue;
                 }
-                //set currentCell to down
-                currentCell = getCell(grid,cell->position.row+1,cell->position.column);
+                //printf("set currentCell to down\n");
+                currentCell = getCell(grid,cell.position.row+1,cell.position.column);
+                add = 2;
                 break;
             case 2:
-                if(cell->position.column-1<0){
+                if(cell.position.column-1<0){
                     continue;
                 }
-                //set currentCell to left
-                currentCell = getCell(grid,cell->position.row,cell->position.column-1);
+                //printf("set currentCell to left\n");
+                currentCell = getCell(grid,cell.position.row,cell.position.column-1);
+                add = 4;
                 break;
             case 3:
-                if(cell->position.column+1<grid->height){
+                if(cell.position.column+1>=grid->height){
                     continue;
                 }
-                //set currentCell to right
-                currentCell = getCell(grid,cell->position.row,cell->position.column+1);
+                //printf("set currentCell to right\n");
+                currentCell = getCell(grid,cell.position.row,cell.position.column+1);
+                add = 8;
         }
         if(!(currentCell->symbol==MISS||currentCell->symbol==HIT))
         {
-            ret += 1<<i; //going to do some bit magic
+            //printf("%c\n",currentCell->symbol);
+            ret += add; //going to do some bit magic
         }
     }
+    return ret;
 }
 
 bool ai_placeAttack(Grid* grid)
 {
-    int test = 0;
-    printf("placing an attack\n");
     static int mode = 0; //determines if it's focus fire or random guess || random guess is 0, focused is 1
-    static Cell* lastHit;
-    char ship;
+    static Cell lastHit = {0};
     int randx;
     int randy;
     Cell* guess; 
     int guesses;
-    //printf("test %d\n",test++);
+    //printf("Last hit = %d:%d\n",lastHit.position.row,lastHit.position.column);
     switch(mode)
     {
         case 0:
             do
             {
-                printf("test %d\n",test++);
+                //printf("test %d\n",test++);
                 randx = rand()%grid->height;
                 randy = rand()%grid->height;
                 guess = getCell(grid,randx,randy);
-                printf("%d:%d\n",randx,randy);
-                pressEnterToContinue();
+                //printf("%d:%d\n",guess->position.row,guess->position.column);
+                //pressEnterToContinue();
             }while(!checkViable(guess));
+            break;
         case 1:
-            printf("test %d\n",test++);
             guesses = checkDirections(grid, lastHit);
+            //printf("Guesses: %d\n",guesses);
             if(guesses==0)
             {
                 mode = 0;
@@ -463,33 +480,42 @@ bool ai_placeAttack(Grid* grid)
             }
             for(int i=0;i<4;i++)
             {
+                //printf("guesses: %d\n",guesses>>(3-i));
                 if(guesses>>(3-i)==1)
                 {
-                    printf("test %d\n",test++);
                     switch(i)
                     {
-                        case 0:
-                            //set guess to up
-                            guess = getCell(grid,lastHit->position.row-1,lastHit->position.column);
-                            break;
-                        case 1:
-                            //set guess to down
-                            guess = getCell(grid,lastHit->position.row+1,lastHit->position.column);
+                        case 3:
+                            //printf("set guess to up\n");
+                            guess = getCell(grid,lastHit.position.row-1,lastHit.position.column);
                             break;
                         case 2:
-                            //set guess to left
-                            guess = getCell(grid,lastHit->position.row,lastHit->position.column-=1);
+                            //printf("set guess to down\n");
+                            guess = getCell(grid,lastHit.position.row+1,lastHit.position.column);
                             break;
-                        case 3:
-                            //set guess to right
-                            guess = getCell(grid,lastHit->position.row,lastHit->position.column+=1);
+                        case 1:
+                            //printf("set guess to left\n");
+                            guess = getCell(grid,lastHit.position.row,lastHit.position.column-1);
+                            break;
+                        case 0:
+                            //printf("set guess to right");
+                            guess = getCell(grid,lastHit.position.row,lastHit.position.column+1);
                     }
                     break;
                 }
             }
+        break;
     }
-    printf("test %d\n",test++);
-    return updateOceanGrid(grid,guess->position);
+    //printf("test %d\n",test++);
+    bool status = updateOceanGrid(grid,guess->position);
+    printf("%d:%d -> %s\n",guess->position.row,guess->position.column, (status)?"Hit":"Miss");
+    if(status)
+    {
+        //printf("hit condition\n");
+        lastHit = *guess;
+        mode = 1;
+    }
+    return status;
 }
 
 //Chris's code
@@ -507,22 +533,41 @@ int main(void)
     welcomeMessage();
     howToPlay();
     
-    Grid playerGrid = {ROW,COLUMN};
-    Grid aiGrid = {ROW,COLUMN};
+    Grid playerGrid = {10,10};
+    playerGrid.height = 10;
+    Grid aiGrid = {10,10};
     
     initializeOceanGrid(&playerGrid);
     initializeOceanGrid(&aiGrid);
-    
+    randomlyPlaceShips(&aiGrid);
     //place ships
     
-    ai_placeships(&playerGrid);
-    //shipSelection(&playerGrid);
+    bool cont = true;
+    char selection,c;
+    while(cont){
+        clearScreen();
+        printf("Manually (m) or Randomly (r) place your ships\n");
+        scanf("%c",&selection);
+        selection = tolower(selection);
+        while ((c = getchar()) != '\n' && c != EOF) {}
+        if(selection=='r'){
+            randomlyPlaceShips(&playerGrid);
+        }else{
+            shipSelection(&playerGrid);
+        }
+        displayOceanGrid(&playerGrid);
+        printf("Continue with current ship layout? (y,n)\n");
+        scanf("%c",&selection);
+        while ((c = getchar()) != '\n' && c != EOF) {}
+        if(selection=='y'){
+            cont = false;
+        }else{
+            initializeOceanGrid(&playerGrid);
+        }
+    }
     
-    //printf("AI ship placement\n");
-    ai_placeships(&aiGrid);
-    //printf("Check ai ship placement\n");
-    //displayOceanGrid(&aiGrid);
-    printf("%d,%s\n",turn,(turn)?"Ai goes first":"Player goes first");
+    
+    printf("%s\n",(turn)?"Ai goes first":"Player goes first");
     pressEnterToContinue();
 
     int player1HP = 17;
@@ -530,7 +575,7 @@ int main(void)
 
     while(player2HP > 0 && player1HP >0){ //main gameplay loop
         if(turn==0){
-            clearScreen();
+            //clearScreen();
             printf("----------Enemy Grid----------\n");
             displayEnemyGrid(&aiGrid);
             printf("\n----------Player Grid----------\n");
@@ -540,14 +585,13 @@ int main(void)
             bool valid;
             Coordinate coord = {0};
             do{
-                int i=0;
-                printf("%d",i++);
+                //printf("%d",i++);
                 getCoordinates(&coord);
-                printf("%d",i++);
+                //printf("%d",i++);
                 attack = getCell(&aiGrid,coord.row,coord.column);
-                printf("%d",i++);
+                //printf("%d",i++);
                 valid = checkViable(attack);
-                printf("%d",i++);
+                //printf("%d",i++);
                 if(!valid){
                     printf("invalid attack location\n");
                 }
