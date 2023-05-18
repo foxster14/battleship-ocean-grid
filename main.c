@@ -2,6 +2,7 @@
 #include <wchar.h>
 #include <ctype.h>
 #include "header.h"
+#include "battleship-text.c"
 
 Cell* getCell(Grid* grid, int x, int y)
 {
@@ -23,9 +24,6 @@ void initializeOceanGrid(Grid* grid){
     for(int i = 0; i < ROW; i++){
         for(int j = 0; j < ROW; j++){
             setSymbol(grid,i,j,WATER);
-            /* grid->cells[i][j].symbol = WATER;
-            grid->cells[i][j].position.row = i;
-            grid->cells[i][j].position.column = j; */
         }
     }
     
@@ -34,7 +32,6 @@ void initializeOceanGrid(Grid* grid){
 void displayOceanGrid(Grid *grid)
 {
     // Print the Column headers
-    //int numOfAlphabetChars = ROW + 65;
     printf("%5c|", ' ');
     for(int i = 0; i < ROW; i++){
         printf("%4d ", i+1);
@@ -43,12 +40,11 @@ void displayOceanGrid(Grid *grid)
     printf("\n");
 
     for(int row = 0; row < ROW; row++){
-        printf("%5c|", row+65); // Print row headers
+        printf("%5c|", row+'A'); // Print row headers
         for(int column = 0; column < COLUMN; column++){
             // Print each coordinate on ocean grid
             Cell* c = getCell(grid,row,column);
-            printf("%4c|", c->symbol);
-            //printf("%5d", table[row][column]);
+            printf("%s%4c%s|", WATER_COLOR, c->symbol, DEFAULT);
         }
         printf("\n");
     }
@@ -56,7 +52,6 @@ void displayOceanGrid(Grid *grid)
 
 void displayEnemyGrid(Grid *grid){
 // Print the Column headers
-    //int numOfAlphabetChars = ROW + 65;
     printf("%5c|", ' ');
     for(int i = 0; i < ROW; i++){
         printf("%4d ", i+1);
@@ -65,7 +60,7 @@ void displayEnemyGrid(Grid *grid){
     printf("\n");
 
     for(int row = 0; row < ROW; row++){
-        printf("%5c|", row+65); // Print row headers
+        printf("%5c|", row+'A'); // Print row headers
         for(int column = 0; column < COLUMN; column++){
             // Print each coordinate on ocean grid
             Cell* c = getCell(grid,row,column);
@@ -73,8 +68,7 @@ void displayEnemyGrid(Grid *grid){
             if(symbol==SHIP){
                 symbol = WATER;
             }
-            printf("%4c|", symbol);
-            //printf("%5d", table[row][column]);
+            printf("%s%4c%s|", WATER_COLOR, symbol, DEFAULT);
         }
         printf("\n");
     }
@@ -82,11 +76,12 @@ void displayEnemyGrid(Grid *grid){
 
 bool updateOceanGrid(Grid *grid, Coordinate target )
 {
-    //printf("%d:%d\n",target.row,target.column);
     Cell* cell = getCell(grid,target.row,target.column);
     if(cell->symbol==SHIP)
     {
+        //printf("%s", RED);
         setSymbol(grid,target.row,target.column,HIT);
+        printf("%s", DEFAULT);
         return true;
     }else{
         setSymbol(grid,target.row,target.column,MISS);
@@ -107,6 +102,9 @@ void pressEnterToContinue(){
 
 void welcomeMessage()
 {
+    coolText();
+    printf("Press 'enter' to continue.");
+    pressEnterToContinue();
     clearScreen();
     printf("Welcome to our Battleship game!\n"
     "This is a CLI version of Battleship made by Sarah Fox, Jake Cermak, Mitchell Humphries, and Christopher Ferrie\n\nPress 'Enter' to continue");
@@ -156,7 +154,7 @@ void gridSelection(Grid* grid)
 }
 
 void welcomeHeader(char* c){
-    printf("\n=========================================== %s ===========================================\n\n", c);
+    printf("=========================================== %s ===========================================\n\n", c);
 }
 
 void howToPlay()
@@ -173,32 +171,32 @@ void howToPlay()
     clearScreen();
     //printf("3. Decide who goes first.\n\n");
     welcomeHeader("How To Play");
-    printf("\n2. Player will take turns guessing where the opponent's ships are\n"
+    printf("2. Player will take turns guessing where the opponent's ships are\n"
     "Player chooses a coordinate on the ocean grid that hasn't been chosen yet as their attack on opponent's ships\n\n"
     "This target will be marked as either a hit or a miss on your view of the opponent's ocean grid\n"
     "If it's a hit, the program will say which ship was hit and the corresponding coordinate will be labeled as a hit\n"
-    "If it's a miss, the program will say it's a miss and the corresponding coordinate will be labeled as a miss ");
+    "If it's a miss, the program will say it's a miss and the corresponding coordinate will be labeled as a miss\n");
 
     pressEnterToContinue();
     clearScreen();
     welcomeHeader("How To Play");
-    printf("\n3. The goal of the game is to successfully hit and sink all of the opponent's ships\n"
-    "Once all coordinates of a single ship are hit, the ship will be marked as sunk ");
+    printf("3. The goal of the game is to successfully hit and sink all of the opponent's ships\n"
+    "Once all coordinates of a single ship are hit, the ship will be marked as sunk\n");
 
     pressEnterToContinue();
     clearScreen();
     welcomeHeader("How To Play");
-    printf("\n4. Continue targetting coordinates until the outcome of the game is decided");
+    printf("4. Continue targetting coordinates until the outcome of the game is decided\n");
     
     pressEnterToContinue();
     clearScreen();
     welcomeHeader("How To Play");
-    printf("\n5. Whoever sinks the opposing fleet of ships first wins the game ");
+    printf("5. Whoever sinks the opposing fleet of ships first wins the game!\n");
+    printf("Now press 'enter' and let's play!\n");
     pressEnterToContinue();
     clearScreen();
 
     welcomeHeader("Place Your Ships");
-    //printf("\n=============================== Place Your Ships ===============================\n\n");
     printf("You will now begin placing your ships\n");
     printf("You have five ships.\n");
     printf(
@@ -208,29 +206,27 @@ void howToPlay()
         "4. Cruiser [3]\n"
         "5. Destroyer [2]\n\n"
     );
+    pressEnterToContinue();
+    clearScreen();
 }
 
-void getCoordinates(Coordinate* coordinates)  //change to one input
+void getCoordinates(Coordinate* coordinates) 
 {
-    //char endChar;
     char input_x;
     int input_y;
     int valid = 0;
     while(!valid){
-        printf("\nChoose a coordinate (Example: A4): \n");
+        printf("\nChoose a coordinate (Example - A4):  ");
         scanf("%c%d", &input_x,&input_y);
         input_x = toupper(input_x);
-        //printf("%c%d\n",input_x,input_y);
-        //printf("what?\n");
+
         if((input_x >= 'A' && input_x <= ('A'+ROW))&&(input_y >= 1 && input_y <= COLUMN))
         {
             coordinates->row = input_x - 'A';
             coordinates->column = input_y - 1;
             valid = 1;
-            //printf("what3?\n");
         }
     }   
-    //printf("what2?\n");
     while ((input_x = getchar()) != '\n' && input_x != EOF) {}
 }
 
@@ -239,27 +235,25 @@ bool checkLocation(Grid* grid, int size, int orientation, int x, int y);
 void shipSelection(Grid* playerGrid) 
 {
     clearScreen();
-    //displayOceanGrid(playerGrid);
     char *ships[5] = {"Carrier", "Battleship", "Submarine", "Cruiser", "Destroyer"};
     int sizes[5] = {5, 4, 3, 3, 2};
     char direction_input;
     int orientation;
     
-    // TODO: This loop should iterate through length of ships array
-    // TODO: try using the ShipType enums?
+    //Iterate through ship array to place all 5 ships
     for (int i = 0; i < 5; i++)
     {
         clearScreen();
+        welcomeHeader("Ship Placement");
         displayOceanGrid(playerGrid);
         while(true)
         {
-            printf("\nPick a location to place your %s with a length of: %d", ships[i], sizes[i]);
+            
+            printf("\nPick a location to place your %s[%d]:  ", ships[i], sizes[i]);
             Coordinate coordinates = {0};
             getCoordinates(&coordinates);
 
-            //printf("\nUser entered:\nrow: %d column: %d\n", coordinates.row, coordinates.column);
-
-            printf("Enter 'V' to place the ship vertically or 'H' to place the ship horizontally:\t");
+            printf("Enter 'V' to place the ship vertically or 'H' to place the ship horizontally:  ");
             scanf("%c", &direction_input);
             direction_input = toupper(direction_input);
             
@@ -319,20 +313,19 @@ int InitialTurnOrder()
     int playerTurn = GenerateRandomNumber();
     if(playerTurn == 1)
     {
-        printf("Player 1 starts\n");
+        //printf("Player 1 starts\n");
         return(1);
     }
     else
     {
-        printf("Player 2 starts\n");
+        //printf("Player 2 starts\n");
         return(0);
     }
 }
 
-//Chris's code
+
 bool checkLocation(Grid* grid, int size, int orientation, int x, int y)
 {
-    //printf("Checking ship location\n");
     for(int i=0;i<size;i++)
     {
         //printf("%d:%d - %s\t", x + (i*((orientation+1)%2)), y + (i*orientation),(orientation)?"Horizontal":"Vertical");
@@ -448,7 +441,7 @@ int checkDirections(Grid* grid,Cell cell)
     return ret;
 }
 
-bool ai_placeAttack(Grid* grid)
+bool ai_placeAttack(Grid* grid,Coordinate* pos)
 {
     static int mode = 0; //determines if it's focus fire or random guess || random guess is 0, focused is 1
     static Cell lastHit = {0};
@@ -476,7 +469,7 @@ bool ai_placeAttack(Grid* grid)
             if(guesses==0)
             {
                 mode = 0;
-                return ai_placeAttack(grid);
+                return ai_placeAttack(grid,pos);
             }
             for(int i=0;i<4;i++)
             {
@@ -508,34 +501,40 @@ bool ai_placeAttack(Grid* grid)
     }
     //printf("test %d\n",test++);
     bool status = updateOceanGrid(grid,guess->position);
-    printf("%d:%d -> %s\n",guess->position.row,guess->position.column, (status)?"Hit":"Miss");
+    //printf("Computer chose: %c%d -> %s\n",(guess->position.row + 65),guess->position.column, (status)?"Hit":"Miss");
     if(status)
     {
         //printf("hit condition\n");
         lastHit = *guess;
         mode = 1;
     }
+    *pos = guess->position;
     return status;
 }
 
-//Chris's code
+void showDisplays(Grid *player, Grid* enemy)
+{
+    printf("\n");
+    printf("\n");
+    welcomeHeader("Enemy Grid");
+    displayEnemyGrid(enemy);
+    printf("\n");
+    welcomeHeader("Player Grid");
+    displayOceanGrid(player);
+}
 
 int main(void)
 {
-    setlocale(LC_CTYPE, "");
-    srand(time(NULL));
+    //setlocale(LC_CTYPE, ""); //Needed for Unicode (couldn't get unicode to work)
+    srand(time(NULL)); //Needed for GenerateRandomNumber function
 
-    //Initial turn order, will need to change based on how we setup plyer. Bool is temp
     int turn = InitialTurnOrder();
-
-    //Needed for GenerateRandomNumber function
 
     welcomeMessage();
     howToPlay();
     
-    Grid playerGrid = {10,10};
-    playerGrid.height = 10;
-    Grid aiGrid = {10,10};
+    Grid playerGrid = {10,10, 0};
+    Grid aiGrid = {10,10, 0};
     
     initializeOceanGrid(&playerGrid);
     initializeOceanGrid(&aiGrid);
@@ -546,7 +545,7 @@ int main(void)
     char selection,c;
     while(cont){
         clearScreen();
-        printf("Manually (m) or Randomly (r) place your ships\n");
+        printf("Would you like to Manually (m) or Randomly (r) place your ships?  ");
         scanf("%c",&selection);
         selection = tolower(selection);
         while ((c = getchar()) != '\n' && c != EOF) {}
@@ -556,7 +555,7 @@ int main(void)
             shipSelection(&playerGrid);
         }
         displayOceanGrid(&playerGrid);
-        printf("Continue with current ship layout? (y,n)\n");
+        printf("\nContinue with current ship layout? (y,n)  ");
         scanf("%c",&selection);
         while ((c = getchar()) != '\n' && c != EOF) {}
         if(selection=='y'){
@@ -567,55 +566,64 @@ int main(void)
     }
     
     
-    printf("%s\n",(turn)?"Ai goes first":"Player goes first");
+    printf("\n%s",(turn)? "Computer goes first" : "Player goes first");
+    printf("\nPress 'enter' to continue.");
     pressEnterToContinue();
+    clearScreen();
 
     int player1HP = 17;
     int player2HP = 17;
 
     while(player2HP > 0 && player1HP >0){ //main gameplay loop
-        if(turn==0){
-            //clearScreen();
-            printf("----------Enemy Grid----------\n");
-            displayEnemyGrid(&aiGrid);
-            printf("\n----------Player Grid----------\n");
-            displayOceanGrid(&playerGrid);
+        if(turn == 0){
+            clearScreen();
+            showDisplays(&playerGrid,&aiGrid);
             // tell user to choose a location to attack
             Cell* attack={0};
             bool valid;
             Coordinate coord = {0};
             do{
-                //printf("%d",i++);
                 getCoordinates(&coord);
-                //printf("%d",i++);
                 attack = getCell(&aiGrid,coord.row,coord.column);
-                //printf("%d",i++);
                 valid = checkViable(attack);
-                //printf("%d",i++);
                 if(!valid){
-                    printf("invalid attack location\n");
+                    printf("Invalid attack location, please try again\n");
                 }
             }while(!valid);
-            if(updateOceanGrid(&aiGrid,attack->position)){
+
+            bool hit = updateOceanGrid(&aiGrid,attack->position);
+            clearScreen();
+            showDisplays(&playerGrid,&aiGrid);
+            if(hit){
+                printf("Hit!\n");
                 player2HP--;
+            }else{
+                printf("Miss\n");
             }
+            pressEnterToContinue();
         }else{
-            printf("AI's turn\n");
-            if(ai_placeAttack(&playerGrid)){
+            clearScreen();
+            printf("\nComputer's turn: \n");
+            Coordinate guess = {0};
+            bool hit = ai_placeAttack(&playerGrid,&guess);
+            showDisplays(&playerGrid,&aiGrid);
+            printf("Computer chose: %c%d -> %s\n",(guess.row + 'A'), guess.column + 1, (hit)?"Hit":"Miss");
+            if(hit){
                 player1HP--;
             }
+            printf("Press 'enter' to continue.");
             pressEnterToContinue();
         }
         turn = (turn+1)%2; // flip the turn
     }
-    // TODO: This should go in separate function?
+    
     if(player2HP == 0)
     {
-        printf("Player 1 wins\n");
+        printf("Congratulations!!! You have won!!\n");
     }
     else if(player1HP == 0)
     {
-        printf("Player 2 wins\n");
+        printf("Better luck next time, Computer wins.\n");
     }
 
 }

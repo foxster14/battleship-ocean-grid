@@ -7,13 +7,18 @@
 
 
 #define WATER       ' '
-#define MISS        '~'
+#define MISS        'O'
 #define HIT         'X'//'\u2715' //switch with ascii character or figure out how to make unicode work 
 #define SHIP        '#'//'\u25A0' //switch with ascii character or figure out how to make unicode work 
 //#define SHIP		'H'
 
 #define ROW         10
 #define COLUMN      10
+
+#define DEFAULT     "\033[0m" //ANSI color
+#define RED         "\033[91;44m" //ANSI color 
+//#define GREEN       "\033[92;44m" //ANSI color
+#define WATER_COLOR "\033[44m"
 
 
 typedef struct {
